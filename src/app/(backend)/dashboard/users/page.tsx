@@ -1,7 +1,8 @@
 import EmptyComponent from '@/components/backend/body/EmptyComponent';
 import PageTitle from '@/components/PageTitle'
 import { getUsers } from '@/utils/actions/user.action'
-import {Trash2, UserPen } from 'lucide-react';
+import { FaEdit } from "react-icons/fa";
+import { FaRegTrashAlt } from "react-icons/fa";
 
 
 const UserDashPage = async () => {
@@ -42,8 +43,8 @@ const UserDashPage = async () => {
                 <td> {user.email} </td>
                 <td> {user.role} </td>
                 <td className="flex items-center gap-2 py-1.5">
-                <UserPen size={20} color='cyan' />
-                  <Trash2 size={18} color="red" />
+                  <FaEdit className="text-green-500" />
+                  <FaRegTrashAlt className="text-red-500" />
                 </td>
               </tr>
             ))

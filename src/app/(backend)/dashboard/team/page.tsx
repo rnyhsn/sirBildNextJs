@@ -2,7 +2,8 @@ import EmptyComponent from '@/components/backend/body/EmptyComponent'
 import PageTitle from '@/components/PageTitle'
 import { deleteMember, getMembers } from '@/utils/actions/member.action'
 import { getFile } from '@/utils/cloudinary/config'
-import { Trash2, UserPen } from 'lucide-react'
+import { FaEdit } from "react-icons/fa";
+import { FaRegTrashAlt } from "react-icons/fa";
 import Image from 'next/image'
 import React from 'react'
 
@@ -21,7 +22,6 @@ const TeamDashPage = async () => {
           <tr>
             <th>s.n</th>
             <th> Name </th>
-            <th> E-mail </th>
             <th>Designation</th>
             <th>Academy</th>
             <th>Role</th>
@@ -39,7 +39,6 @@ const TeamDashPage = async () => {
               <Image src={imgUrl || "/avatar.jpg"} alt="" width={28} height={28} className="rounded-full object-cover w-7 h-7" />
               <span> {member.name} </span>
             </td>
-            <td> {member.email} </td>
             <td> {member.designation}  </td>
             <td className="flex flex-col">
               <span>{member.academy}</span>
@@ -48,11 +47,11 @@ const TeamDashPage = async () => {
             <td className="text-gray-400"> {member.role} </td>
             
             <td className="flex items-center gap-2 py-1.5">
-              <UserPen size={20} color='cyan' />
+              <FaEdit className="text-green-500" />
               <form action={deleteMember} className="cursor-pointer">
                 <input type="hidden" name="id" value={member._id.toString()} />
                 <button>
-                  <Trash2 size={18} color="red" />
+                  <FaRegTrashAlt className="text-red-500" />
                 </button>
               </form>
             </td>
