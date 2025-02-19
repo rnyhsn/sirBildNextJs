@@ -98,10 +98,10 @@ const extensions = [
     })
 ]
 
-const RichTextEditor = () => {
+const RichTextEditor = ({content}: {content?: string}) => {
     const editor = useEditor({
         extensions,
-        content: ``,
+        content: `${content ? content : ""}`,
         immediatelyRender: false,
     })
 

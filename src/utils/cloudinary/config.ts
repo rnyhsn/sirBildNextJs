@@ -8,7 +8,7 @@ cloudinary.config({
 })
 
 
-export const uploadFile = async (file: File, folder: string) => {
+export const uploadFile = async (file: File, folder: string = "bild") => {
 
     const arrayBuffer = await file.arrayBuffer();
     const bytes = Buffer.from(arrayBuffer);

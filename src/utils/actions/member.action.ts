@@ -9,9 +9,9 @@ import { redirect } from "next/navigation";
 
 
 export const registerMember = async (formData: FormData) => {
-    console.log(formData);
-    const {name, email, phone, role, designation, academy, location, file} = Object.fromEntries(formData);
-    console.log(file);
+    const {name, email, phone, role, designation, academy, location} = Object.fromEntries(formData);
+    // console.log(file);
+    let file = formData.get('file') as File
     try {
         await connecToDB();
         const existingMember = await Member.findOne({email});
@@ -19,10 +19,13 @@ export const registerMember = async (formData: FormData) => {
             return errorResponse(409, `Member with this email already exists named '${existingMember.name}'`);
         }
         let imgInfo: any;
-        if(file) {
-            imgInfo = await uploadFile(file as File, 'bild/teamMember');
-            console.log(imgInfo);
+        if(file && file.size > 0) {
+            if(file.size > 2*1024*1024) {
+                return errorResponse(401, "Image size must not exceed 2MB");
+            }
+            imgInfo = await uploadFile(file, 'bild/teamMember');
         }
+
         let newMember = new Member({
             name,
             email,
@@ -68,4 +71,68 @@ export const deleteMember = async (formData: FormData) => {
 
     revalidatePath("/dashboard/team");
     redirect("/dashboard/team");
+}
+
+
+export const getMember = async (id: string) => {
+
+    try {
+        await connecToDB();
+        const member = await Member.findById(id).lean();
+
+        if(!member) {
+            return errorResponse(404, "Member not Found");
+        }
+        return successResponse(200, "Member fetched successfully", member);
+    } catch (error) {
+        return errorResponse();
+    }
+}
+
+
+
+export const updateMember = async (formData: FormData) => {
+    let dataArray = Array.from(formData.entries()).filter(([_, value]) => value !== "" && value !== null);
+    let member = Object.fromEntries(dataArray);
+    let file = member.file as File;
+    let id = member.id;
+    try {
+        await connecToDB();
+        
+        if(file && file.size === 0) {
+            delete member.file;
+        }
+    
+        const memberExist = await Member.findById(id);
+
+        if(!memberExist) {
+            return errorResponse(404, "Member not Found");
+        }
+
+        if(file && file.size > 0) {
+            // check the image size must not exceed
+            if(file.size > 2*1024*1024) {
+                return errorResponse(409, "Image size must not exceed 2MB");
+            }
+
+            // upload the image on cloudinary
+            const fileResp: any = await uploadFile(file, "bild/teamMember");
+            member.image = fileResp.public_id;
+
+            // delete the already existing file in cloudinary and formData
+            if(memberExist.image) {
+                await deleteFile(memberExist.image);
+            }
+            delete member.file;
+        }
+
+        delete member.id;
+        await Member.findByIdAndUpdate(id, member);
+        console.log(member);
+
+        return successResponse(202, "Member Updated successfully");
+
+    } catch (error) {
+        return errorResponse();
+    }
 }

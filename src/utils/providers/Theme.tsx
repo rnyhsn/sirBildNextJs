@@ -1,21 +1,25 @@
 'use client';
-import { createContext, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 
-export const Theme = createContext<null|{dark: boolean, toggle: ()=> void}>(null);
+export const Theme = createContext<{darkMode: boolean, toggle: ()=> void}>( {darkMode: true, toggle: ()=> {}} );
 
 
 
 export const ThemeProvider = ({children}: {children: React.ReactNode}) => {
 
-    const [dark, setDark] = useState(true);
+    const [darkMode, setDarkMode] = useState(JSON.parse(localStorage.getItem('darkMode') as string) || true);
 
     const toggle = () => {
-        setDark(prev => !prev);
+        setDarkMode(!darkMode);
     }
 
+    useEffect(()=> {
+        localStorage.setItem('darkMode', darkMode);
+    }, [darkMode]);
+    
     return (
-        <Theme.Provider  value={{dark, toggle}}>
-            <html lang="en" className={`${dark && "dark"}`}>
+        <Theme.Provider  value={{darkMode, toggle}}>
+            <html lang="en" className={darkMode ? "dark" : "light"}>
             {children}
             </html>
         </Theme.Provider>

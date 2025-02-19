@@ -6,7 +6,9 @@ const FrontendLayout = ({children}: {children: ReactNode}) => {
   return (
     <div>
       <Header />
+        <div className="container mt-10">
         {children}
+        </div>
       <Footer />
     </div>
   )

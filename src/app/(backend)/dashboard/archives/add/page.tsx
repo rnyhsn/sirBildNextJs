@@ -5,6 +5,7 @@ import { createPost } from "@/utils/actions/post.action";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useState } from "react";
+import { FaTrashCan } from "react-icons/fa6";
 import { MdCloudUpload } from "react-icons/md";
 import { toast } from "react-toastify";
 
@@ -21,11 +22,20 @@ const AddArchivePage = () => {
         }
     }
 
+    const removeImage = () => {
+      setImgUrl("");
+    }
+
     const handleFormSubmit = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
           setLoading(true);
           let formData = new FormData(e.currentTarget);
+          
+          if(!imgUrl) {
+            formData.delete('image');
+          }
+
           const resp = await createPost(formData);
           if(resp.success && resp.statusCode === 202) {
             toast.success(resp.message);
@@ -59,7 +69,10 @@ const AddArchivePage = () => {
             <div className="h-36 bg-blue-400 rounded-md cursor-pointer relative">
             {
               imgUrl ? (
-                <Image src={imgUrl} alt="" fill className="object-cover" />
+                <>
+                  <Image src={imgUrl} alt="" fill className="object-cover" />
+                  <div onClick={removeImage} className={`w-10 h-10 rounded-full bg-red-500 hover:bg-red-400 items-center justify-center absolute -top-2 -right-2 ${imgUrl ? "flex" : "hidden"}`}> <FaTrashCan /></div>
+                </>
               ) : (
                 <>
                 <label htmlFor="image" className="w-full h-full flex items-center justify-center cursor-pointer">

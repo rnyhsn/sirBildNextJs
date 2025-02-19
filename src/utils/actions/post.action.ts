@@ -45,11 +45,11 @@ export const createPost = async (formData: FormData) => {
 }
 
 
-export const getPosts = async () => {
+export const getPosts = async ({limit = 0}: {limit?: number}) => {
 
     try {
         await connecToDB();
-        const posts = await Post.find().lean();
+        const posts = await Post.find().populate('user').limit(limit).sort({createdAt: -1}).lean();
         return successResponse(200, "Post fetched successfully", posts);
     } catch (error) {
         console.log(error);
@@ -58,8 +58,19 @@ export const getPosts = async () => {
 }
 
 
-export const getPost = async () => {
+export const getPost = async (id: string) => {
 
+    try {
+        await connecToDB();
+        let post = await Post.findById(id).lean();
+        if(!post) {
+            return errorResponse(404, "Post not Found");
+        }
+        // post = {...post, _id: String(post._id)};
+        return successResponse(200, "Post fetched successfully", post);
+    } catch (error) {
+        return errorResponse();
+    }
 }
 
 export const deletePost = async (formData: FormData) => {
@@ -76,4 +87,78 @@ export const deletePost = async (formData: FormData) => {
     }
     revalidatePath("/dashboard/archives");
     redirect("/dashboard/archives");
+}
+
+
+
+export const updatePost = async (formData: FormData, deleteImg: boolean) => {
+    const {id, title, content, slug} = Object.fromEntries(formData);
+    const image = formData.get('image') as File;
+    console.log("Image delete:", deleteImg);
+    try {
+        // console.log(formData);
+        await connecToDB();
+        const existingPost = await Post.findById(id);
+        if(!existingPost) {
+            return errorResponse(404, "Post not found to update");
+        }
+        if(deleteImg) {
+            await deleteFile(existingPost.featuredImg);
+            await Post.findByIdAndUpdate(id, {
+                featuredImg: ""
+            })
+        }
+        let featuredImg = "";
+        if(image && image.size > 0) {
+            if(image.size > 2*1024*1024) {
+                return errorResponse(401, "Image size must be less than 2MB");
+            }
+
+            // delete the image from cloudinary if any
+            if(existingPost.featuredImg) {
+                await deleteFile(existingPost.featuredImg);
+            }
+            
+            // upolad the new image
+            const resp: any = await uploadFile(image, "bild/post");
+            featuredImg = resp?.public_id;
+        }
+        let newPost: any;
+        if(featuredImg) {
+            newPost =  {
+                title,
+                slug,
+                content,
+                featuredImg
+            }
+        } else {
+            newPost =  {
+                title,
+                slug,
+                content
+            }
+        }
+        await Post.findByIdAndUpdate(id, newPost);
+
+        return successResponse(204, "Updated successfully");
+    } catch (error) {
+        return errorResponse();
+    }
+}
+
+
+export const getPostBySlug = async (slug: string) => {
+
+    try {
+        await connecToDB();
+        const post = await Post.findOne({slug}).populate('user').lean();
+
+        if(!post) {
+            return errorResponse(404, "Post not Found");
+        }
+
+        return successResponse(200, "", post);
+    } catch (error) {
+        return errorResponse();
+    }
 }

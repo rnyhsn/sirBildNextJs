@@ -6,11 +6,12 @@ import { FaEdit } from "react-icons/fa";
 import { FaRegTrashAlt } from "react-icons/fa";
 import Image from 'next/image'
 import React from 'react'
+import Link from 'next/link';
 
 const TeamDashPage = async () => {
   const resp = await getMembers();
   if(resp.success && resp.statusCode === 200 && resp.payload.length === 0) {
-    return <EmptyComponent title="Team List is Empty" />
+    return <EmptyComponent title="Team List is Empty" link='/dashboard/team/add' />
   }
   return (
     <div>
@@ -47,7 +48,9 @@ const TeamDashPage = async () => {
             <td className="text-gray-400"> {member.role} </td>
             
             <td className="flex items-center gap-2 py-1.5">
-              <FaEdit className="text-green-500" />
+              <Link href={`/dashboard/team/${member._id}`}>
+                <FaEdit className="text-green-500" />
+              </Link>
               <form action={deleteMember} className="cursor-pointer">
                 <input type="hidden" name="id" value={member._id.toString()} />
                 <button>

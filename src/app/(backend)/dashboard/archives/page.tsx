@@ -7,12 +7,13 @@ import { FaRegTrashAlt } from "react-icons/fa";
 
 import Image from 'next/image';
 import React from 'react'
+import Link from 'next/link';
 
 const ArchieveDashPage = async () => {
-  const resp = await getPosts();
+  const resp = await getPosts({});
 
   if(resp.success && resp.statusCode === 200 && resp.payload.length === 0) {
-    return <EmptyComponent title="Post List is Empty" />
+    return <EmptyComponent title="Post List is Empty" link='/dashboard/archives/add' />
   }
 
   return (
@@ -42,12 +43,15 @@ const ArchieveDashPage = async () => {
             </td>
             <td> {post.content.slice(0, 35)}... </td>
             <td className="flex items-center gap-2 py-1.5">
-              <FaEdit className="text-green-500" />
+              <Link href={`/dashboard/archives/${post._id}`}>
+                <FaEdit className="text-green-500" />
+              </Link>
               <form action={deletePost} className="cursor-pointer">
                 <input type="hidden" name="id" value={post._id.toString()} />
-                <button>
-                  <FaRegTrashAlt className="text-red-500" />
-                </button>
+                  <button>
+                    <FaRegTrashAlt className="text-red-500" />
+                  </button>
+                
               </form>
             </td>
           </tr>

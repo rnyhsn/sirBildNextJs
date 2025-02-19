@@ -1,14 +1,17 @@
 'use client';
 import PageTitle from '@/components/PageTitle'
 import { registerMember } from '@/utils/actions/member.action';
-import { CloudUpload, X } from 'lucide-react'
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { MdCloudUpload } from "react-icons/md";
+
+
 import { ChangeEvent, FormEvent, MouseEvent, useState } from 'react'
 import { toast } from 'react-toastify';
 
 const TeamAddPage = () => {
     const [error, setError] = useState("");
+    const [imgError, setImgError] = useState("");
     const [imgUrl, setImgUrl] = useState("");
     const [loading, setLoading] = useState(false);
     const router = useRouter();
@@ -38,6 +41,8 @@ const TeamAddPage = () => {
             } else if(resp.success && resp.statusCode === 202) {
                 toast.success(resp.message);
                 router.push("/dashboard/team");
+            } else if (!resp.success && resp.statusCode === 409) {
+                setImgError(resp.message);
             }
             setLoading(false);
         } catch (error) {
@@ -99,22 +104,25 @@ const TeamAddPage = () => {
                 }
                 </button>
         </div>
-        </div>
-                <label htmlFor='file' className="w-[20%] relative px-10 h-[250px] py-20 bg-bgLightSecondary dark:bg-bgDarkSecondary flex justify-center cursor-pointer">
+        </div>  
+
+                <label htmlFor='file' className="w-[20%] relative px-10 h-[250px] py-20 bg-bgLightSecondary dark:bg-bgDarkSecondary flex justify-center items-center cursor-pointer group">
                 {
                     imgUrl ? (
 
                        <Image src={imgUrl} alt="" fill className="object-cover" />
                     ) : (
-                        <CloudUpload size={100} />
+                        <MdCloudUpload className="text-9xl" />
                     )
                 }
                 <input type="file" className="hidden" id="file" name="file" accept='image/*' onChange={handleImageChange}  />
-                <div onClick={removeImage} className={`w-8 h-8 ${imgUrl ? "flex" : "hidden"} items-center justify-center rounded-full bg-red-500 absolute -top-3 -right-3`}>
-                    <X size={20} />
+                <div onClick={removeImage} className="absolute w-full h-full top-0 left-0 bg-black opacity-60 hidden group-hover:flex items-center justify-center">
+                    <MdCloudUpload className="text-7xl" />
                 </div>
                 </label>
-         
+                {
+                    imgError && <p> {imgError} </p>
+                }
     </form>
    
   </div>
