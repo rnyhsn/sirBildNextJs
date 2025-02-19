@@ -6,10 +6,10 @@ import { getFile } from '@/utils/cloudinary/config';
 import React from 'react'
 import SuperJSON from 'superjson';
 
-const TeamUpdatePage = async ({params}: {params: {id: Promise<string>}}) => {
+const TeamUpdatePage = async ({params}: {params: Promise<any>}) => {
     const id = (await params).id;
     console.log(id);
-    const resp = await getMember(id.toString());
+    const resp = await getMember(id);
     if(!resp.success && resp.statusCode === 404) {
         return <EmptyComponent title="404 - Member not found" />
     }
