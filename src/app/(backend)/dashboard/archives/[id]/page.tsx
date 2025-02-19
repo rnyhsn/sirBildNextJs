@@ -7,7 +7,7 @@ import SuperJSON from 'superjson';
 
 
 
-const UpadateArchivePage = async ({params}: {params: {id: string}}) => {
+const UpadateArchivePage = async ({params}: {params: Promise<any>}) => {
     // console.log(params);
     const id = (await params).id;
     const resp = await getPost(id);
