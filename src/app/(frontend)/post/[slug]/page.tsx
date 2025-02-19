@@ -4,9 +4,9 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import parse from 'html-react-parser';
 
-const SinglePostPage = async ({params}: {params: {slug: Promise<string>}}) => {
+const SinglePostPage = async ({params}: {params: Promise<any>}) => {
     let slug = (await params).slug;
-    const resp = await getPostBySlug(slug.toString());
+    const resp = await getPostBySlug(slug);
     if(!resp.success && resp.statusCode === 404) {
         return notFound();
     }
