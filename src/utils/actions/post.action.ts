@@ -148,10 +148,11 @@ export const updatePost = async (formData: FormData, deleteImg: boolean) => {
 
 
 export const getPostBySlug = async (slug: string) => {
-
+    let decodedSlug = decodeURIComponent(slug);
+    console.log("Decoded slug: ", decodedSlug);
     try {
         await connecToDB();
-        const post = await Post.findOne({slug}).populate('user').lean();
+        const post = await Post.findOne({slug: decodedSlug}).populate('user').lean();
 
         if(!post) {
             return errorResponse(404, "Post not Found");
@@ -159,6 +160,29 @@ export const getPostBySlug = async (slug: string) => {
 
         return successResponse(200, "", post);
     } catch (error) {
+        return errorResponse();
+    }
+}
+
+export const searchPosts = async (query: string) => {
+    let regexp = new RegExp(query, 'i');
+    try {
+        await connecToDB();
+        const posts = await Post.find({
+            title: {
+                $regex: regexp
+            }
+        }).populate("user").lean();
+        console.log(posts);
+
+        if(posts.length === 0) {
+            return errorResponse(404, "Search Result: 0");
+        }
+
+        return successResponse(200, "", posts);
+        
+    } catch (error) {
+        console.log(error);
         return errorResponse();
     }
 }

@@ -1,7 +1,7 @@
 import Loading from '@/components/Loading'
 import React from 'react'
 
-const DashboardPage = () => {
+const LoadingPage = () => {
   return (
     <div>
       <Loading />
@@ -9,4 +9,4 @@ const DashboardPage = () => {
   )
 }
 
-export default DashboardPage
+export default LoadingPage

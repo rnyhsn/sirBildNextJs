@@ -6,7 +6,7 @@ const BackendLayout = ({children}: {children: ReactNode}) => {
   return (
     <div className="flex gap-4">
       <Sidebar />
-      <div className="w-full pr-4 flex flex-col gap-5">
+      <div className="pr-4 flex flex-col gap-5 w-[80%] ml-[22%]">
         <Header />
         <div className="">
         {children}

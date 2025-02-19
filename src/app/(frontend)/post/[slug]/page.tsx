@@ -19,7 +19,7 @@ const SinglePostPage = async ({params}: {params: Promise<any>}) => {
   return (
     <div>
       <div className="flex gap-8">
-      <div className="flex flex-col gap-4 w-[70%] py-10 px-12 bg-bgLightSecondary dark:bg-bgDarkSecondary rounded-md">
+      <div className="flex flex-col gap-4 w-[80%] py-10 px-12 bg-bgLightSecondary dark:bg-bgDarkSecondary rounded-md">
         <h2> {post.title} </h2>
         {
             img && (
@@ -28,7 +28,7 @@ const SinglePostPage = async ({params}: {params: Promise<any>}) => {
                 </div>
             )
         }
-        <div>
+        <div className="leading-8">
             {parse(post.content)}
         </div>
       </div>

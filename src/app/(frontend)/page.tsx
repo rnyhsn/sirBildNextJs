@@ -14,7 +14,7 @@ export default async function Home() {
       {
         resp.success && resp.payload.map((post: any, i: number) => (
           <div key={i} className="border-l-4 border-gray-400 pl-5">
-            <Link href={`/post/${post.slug}`} className="text-lg capitalize text-blue-400 font-semibold"> {post.title} </Link>
+            <Link href={`/post/${post.slug}`} className="text-lg capitalize text-txtLightSecondary dark:text-txtDarkSecondary hover:text-blue-400 font-semibold"> {post.title} </Link>
             <p className="text-sm text-txtLightSecondary dark:text-txtDarkSecondary"> {post.user.name} </p>
           </div>
         ))

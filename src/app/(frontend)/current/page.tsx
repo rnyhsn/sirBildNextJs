@@ -1,10 +1,13 @@
 import EmptyComponent from '@/components/backend/body/EmptyComponent';
-import { getPosts } from '@/utils/actions/post.action';
+import { getPosts, searchPosts } from '@/utils/actions/post.action';
 import Image from 'next/image';
 import Link from 'next/link';
 
 
 const CurrentPage = async () => {
+
+  
+
   const resp = await getPosts({limit: 10});
   if(resp.success && resp.payload.length === 0) {
     return <EmptyComponent title="No Post is Added yet" />

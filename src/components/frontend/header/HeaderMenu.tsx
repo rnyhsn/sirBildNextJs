@@ -1,4 +1,5 @@
 import NavLink from "./NavLink"
+import SearchBox from "./SearchBox"
 
 const menus = [
     {
@@ -40,10 +41,7 @@ const HeaderMenu = () => {
         }
         </div>
         {/* Search Box Section */}
-        <div>
-            <input type="text" className="py-1.5 rounded-md text-black mr-2 px-3 outline-none" placeholder="Search Here..." />
-            <button className="px-3 py-1.5 bg-white text-black rounded-md font-semibold">Search</button>
-        </div>
+        <SearchBox />
       </div>
     </div>
   )
