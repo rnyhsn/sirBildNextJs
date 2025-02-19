@@ -7,11 +7,11 @@ import SuperJSON from 'superjson';
 
 
 
-const UpadateArchivePage = async ({params}: {params: {id: Promise<string>}}) => {
+const UpadateArchivePage = async ({params}: {params: {id: string}}) => {
     // console.log(params);
-    const {id} = await params;
+    const {id} = params;
     console.log(id);
-    const resp = await getPost((await id).toString());
+    const resp = await getPost(id);
     if(!resp.success && resp.statusCode === 404) {
         return <EmptyComponent title="404-Post Not Found" />
     }
